@@ -29,9 +29,10 @@ discordClient.on("message", async message => {
         var option = menuEmbed(message);
 
         if ( !option ) return;
-
+    
         if ( option.toLowerCase() === "g" ) {
             //Call grow function here
+
         }
         else if ( option.toLowerCase() === "i" ) {
             //Call Inject funtion
@@ -43,4 +44,4 @@ discordClient.on("message", async message => {
 })
 
 
-discordClient.login("OTU1MjM3NzMxNDI3MDQ1NDE2.Yjewdg.kbm8Qe4H3IH20J6_xCc_eoM5tcg");
+discordClient.login("");
