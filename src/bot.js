@@ -1,7 +1,11 @@
 const Discord = require('discord.js');
 const discordClient = new Discord.Client();
+require('dotenv').config();
+
+const TOKEN = process.env.TOKEN;
 
 var { menuEmbed } = require("./embeds/menu-embed");
+var { growEmbed } = require("./embeds/grow-embed");
 
 var insultList = [
     "hi scrub",
@@ -26,22 +30,22 @@ discordClient.on("message", async message => {
 
     if (cmdName === "menu") {
         //Display embed for menu option
-        var option = menuEmbed(message);
-
+        var option = await menuEmbed(message);
+        
         if ( !option ) return;
     
-        if ( option.toLowerCase() === "g" ) {
+        if ( option.toLowerCase().startsWith("g")) {
             //Call grow function here
-
+            await growEmbed(message);
         }
-        else if ( option.toLowerCase() === "i" ) {
+        else if ( option.toLowerCase().startsWith("i")) {
             //Call Inject funtion
         }
-        else if ( option.toLowerCase() === "s" ) {
+        else if ( option.toLowerCase().startsWith("s")) {
             //Call Slay funtion
         }
     }
 })
 
 
-discordClient.login("");
+discordClient.login(TOKEN);

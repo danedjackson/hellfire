@@ -1,4 +1,18 @@
 const Discord = require('discord.js');
+var { getDinoPrices } = require('../functions/file-manager');
+
+function cancelCheck( msg) {
+    if (msg === undefined || msg == null || msg == "") return true;
+    try {
+        if (msg.toLowerCase().indexOf("cancel") != -1) {
+            return true;
+        }
+    } catch (err) {
+        console.err(`Error comparing value to "cancel" string\n${err}`);
+        return false;
+    }
+    return false;
+}
 
 async function growEmbed(message) {
     var timedOut = false;
@@ -36,10 +50,11 @@ async function growEmbed(message) {
     }
 
     prompt.fields = [];
+
     var dinoPriceList = await getDinoPrices();
     var prices = "";
     for (var x = 0; x < dinoPriceList.length; x++) {
-        prices += `${dinoPriceList[x].ShortName}\t:\t$${dinoPriceList[x].Price.toLocaleString()}\n`;
+        prices += `${dinoPriceList[x].Name}\t:\t🔥${dinoPriceList[x].GrowPrice.toLocaleString()}\n`;
     }
     prompt.addFields(
         {
@@ -66,8 +81,8 @@ async function growEmbed(message) {
         return false;
     }
     for (var x = 0; x < dinoPriceList.length; x++) {
-        if( dino.toLowerCase() == dinoPriceList[x].ShortName.toLowerCase() ) {
-            price = dinoPriceList[x].Price;
+        if( dino.toLowerCase() == dinoPriceList[x].Name.toLowerCase() ) {
+            price = dinoPriceList[x].GrowPrice;
             dinoFound = true;
             break;
         }
