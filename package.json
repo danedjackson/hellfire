@@ -10,6 +10,8 @@
   "author": "Kanna",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.26.1",
+    "basic-ftp": "^4.6.6",
     "discord.js": "^12.5.3",
     "dotenv": "^16.0.0"
   }

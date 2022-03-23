@@ -134,6 +134,14 @@ async function growEmbed(message) {
     if(timedOut) return false;
 
     if (confirm.toLowerCase().startsWith("y")) {
+
+        dinoPriceList.forEach(d => {
+            console.log(d)
+            if(d.Name.toLowerCase() == dino.toLowerCase()) {
+                dino = d.CodeName;
+            }
+        })
+
         prompt.fields = [];
         prompt.setTitle(`Please wait for the transaction to be completed.`);
         message.reply(prompt);
