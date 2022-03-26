@@ -24,7 +24,7 @@ async function deleteLocalFile(fileId) {
 
 const handleDinoGrow = async(message, steamId, price, dinoName) => {
     if (!await downloadPlayerFile(message, steamId)) return false;
-    if (!await editPlayerFile(message, steamId, dinoName)) return false;
+    if (!await editPlayerFile(message, steamId, dinoName, "grow")) return false;
     if (!await uploadPlayerFile(message, steamId, price)) return false;
     return true;
 }
@@ -52,18 +52,34 @@ const downloadPlayerFile = async (message, steamId) => {
     }
 }
 
-const editPlayerFile = async (message, steamId, dinoName) => {
+const editPlayerFile = async (message, steamId, dinoName, type) => {
     console.log(`Editing file for ${steamId}. . .`)
     try{
         var contents = JSON.parse(fs.readFileSync(`${steamId}.json`, `utf-8`));
         if(contents.bBrokenLegs) {
             message.reply(`please heal your leg before requesting a grow.`);
+            deleteLocalFile(steamId);
             return false;
         }
         if(contents.BleedingRate.localeCompare("0") !== 0) {
             message.reply(`please heal your bleed before requesting a grow.`);
+            deleteLocalFile(steamId);
             return false;
         }
+
+        //Check if the user has this dino
+        if (type == "grow" && !contents.CharacterClass.toLowerCase().startsWith(dinoName.toLowerCase())) {
+            message.reply(`you do not have that dino in game.`);
+            deleteLocalFile(steamId);
+            return false;
+        }
+        //Replacing dinoName with the code name for the dino
+        var dinoPriceList = await getDinoPrices();
+        dinoPriceList.forEach(entry => {
+            if(entry.Name.toLowerCase() == dinoName.toLowerCase()) {
+                dinoName = entry.CodeName;
+            }
+        })
         var height;
         dinoName.toLowerCase() == "spino" ? height = 200 : height = 100;
         contents.CharacterClass = dinoName;
@@ -88,6 +104,7 @@ const editPlayerFile = async (message, steamId, dinoName) => {
     } catch ( err ) {
         console.log(`Something went wrong growing dino for ${steamId}: ${err}`);
         message.reply(`something went wrong growing your dino. Please try again.`);
+        deleteLocalFile(steamId);
         return false;
     }
 }

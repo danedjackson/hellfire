@@ -52,9 +52,11 @@ discordClient.on("message", async message => {
         }
         else if ( option.toLowerCase().startsWith("i")) {
             //Call Inject funtion
+            return message.reply("Not yet implemented, will be here soon!")
         }
         else if ( option.toLowerCase().startsWith("s")) {
             //Call Slay funtion
+            return message.reply("Not yet implemented, will be here soon!")
         }
     }
 })
