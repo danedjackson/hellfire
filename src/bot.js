@@ -8,7 +8,8 @@ const PREFIX = process.env.PREFIX;
 var { menuEmbed } = require("./embeds/menu-embed");
 var { growEmbed } = require("./embeds/grow-embed");
 var { handleDinoGrow } = require("./functions/file-manager");
-const { injectEmbed } = require('./embeds/inject-embed');
+var { injectEmbed } = require('./embeds/inject-embed');
+const { addSteamID, addAlt } = require('./api/steamManager');
 
 var insultList = [
     "hi scrub",
@@ -60,6 +61,17 @@ discordClient.on("message", async message => {
             //Call Slay funtion
             return message.reply("Not yet implemented, will be here soon!")
         }
+    }
+
+    if (cmdName === "link") {
+        if(args.length != 1 || !args[0].startsWith('7656')) return message.reply(`please link a valid steam ID`);
+        if(await addSteamID(message.author.id, args[0])) return message.reply(`successfully linked your ID`);
+        message.reply(`something went wrong while linking this ID, please check if it is valid and try again.`);
+    }
+
+    if (cmdName === "link-alt") {
+        if(args.length != 1 || !args[0].startsWith('7656')) return message.reply(`please link a valid steam ID`);
+        await addAlt(message, message.author.id, args[0]);
     }
 })
 
