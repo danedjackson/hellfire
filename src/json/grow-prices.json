@@ -3,48 +3,42 @@
         "Name": "Allo",
         "CodeName": "AlloAdultS",
         "GrowPrice": 350,
-        "InjectPrice": null,
         "Type": "Carni"
     },
     {
         "Name": "Carno",
         "CodeName": "CarnoAdultS",
         "GrowPrice": 350,
-        "InjectPrice": null,
         "Type": "Carni"
     },
     {
-        "Name": "Cera",
-        "CodeName": "CeraAdultS",
+        "Name": "Cerato",
+        "CodeName": "CeratoAdultS",
         "GrowPrice": 350,
-        "InjectPrice": null,
         "Type": "Carni"
     },
     {
         "Name": "Diablo",
         "CodeName": "DiabloAdultS",
         "GrowPrice": 300,
-        "InjectPrice": null
+        "Type": "Herbi"
     },
     {
         "Name": "Dilo",
         "CodeName": "DiloAdultS",
         "GrowPrice": 250,
-        "InjectPrice": null,
         "Type": "Carni"
     },
     {
         "Name": "Dryo",
         "CodeName": "DryoAdultS",
         "GrowPrice": 150,
-        "InjectPrice": null,
         "Type": "Herbi"
     },
     {
         "Name": "Galli",
         "CodeName": "GalliAdultS",
         "GrowPrice": 150,
-        "InjectPrice": null,
         "Type": "Herbi"
 
     },
@@ -52,42 +46,36 @@
         "Name": "Maia",
         "CodeName": "MaiaAdultS",
         "GrowPrice": 300,
-        "InjectPrice": null,
         "Type": "Herbi"
     },
     {
         "Name": "Pachy",
         "CodeName": "PachyAdultS",
         "GrowPrice": 150,
-        "InjectPrice": null,
         "Type": "Herbi"
     },
     {
         "Name": "Para",
         "CodeName": "ParaAdultS",
-        "GrowPrice": 300,
-        "InjectPrice": null,
+        "GrowPrice": 150,
         "Type": "Herbi"
     },
     {
         "Name": "Sucho",
         "CodeName": "SuchoAdultS",
-        "GrowPrice": 350,
-        "InjectPrice": null,
+        "GrowPrice": 175,
         "Type": "Carni"
     },
     {
         "Name": "Trike",
         "CodeName": "TrikeAdultS",
         "GrowPrice": 600,
-        "InjectPrice": null,
         "Type": "Herbi"
     },
     {
         "Name": "Utah",
         "CodeName": "UtahAdultS",
-        "GrowPrice": 300,
-        "InjectPrice": null,
+        "GrowPrice": 250,
         "Type": "Carni"
     }
 ]

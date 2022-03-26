@@ -1,0 +1,87 @@
+[
+    {
+        "Name": "Acro",
+        "CodeName": "Acro",
+        "InjectPrice": 500,
+        "Type": "Carni"
+    },
+    {
+        "Name": "Albert",
+        "CodeName": "Albert",
+        "InjectPrice": 400,
+        "Type": "Carni"
+    },
+    {
+        "Name": "Anky",
+        "CodeName": "Anky",
+        "InjectPrice": 350,
+        "Type": "Herbi"
+    },
+    {
+        "Name": "Austro",
+        "CodeName": "Austro",
+        "InjectPrice": 50,
+        "Type": "Carni"
+    },
+    {
+        "Name": "Ava",
+        "CodeName": "Ava",
+        "InjectPrice": 0,
+        "Type": "Herbi"
+    },
+    {
+        "Name": "Bary",
+        "CodeName": "Bary",
+        "InjectPrice": 150,
+        "Type": "Carni"
+    },
+    {
+        "Name": "Camara",
+        "CodeName": "Camara",
+        "InjectPrice": 1200,
+        "Type": "Herbi"
+
+    },
+    {
+        "Name": "Herrera",
+        "CodeName": "Herrera",
+        "InjectPrice": 50,
+        "Type": "Carni"
+    },
+    {
+        "Name": "Shant",
+        "CodeName": "Shant",
+        "InjectPrice": 700,
+        "Type": "Herbi"
+    },
+    {
+        "Name": "Stego",
+        "CodeName": "Stego",
+        "InjectPrice": 350,
+        "Type": "Herbi"
+    },
+    {
+        "Name": "Taco",
+        "CodeName": "Taco",
+        "InjectPrice": 0,
+        "Type": "Herbi"
+    },
+    {
+        "Name": "Theri",
+        "CodeName": "Theri",
+        "InjectPrice": 350,
+        "Type": "Herbi"
+    },
+    {
+        "Name": "Oro",
+        "CodeName": "Oro",
+        "InjectPrice": 0,
+        "Type": "Herbi"
+    },
+    {
+        "Name": "Velo",
+        "CodeName": "Velo",
+        "InjectPrice": 0,
+        "Type": "Carni"
+    }
+]

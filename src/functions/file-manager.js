@@ -1,7 +1,8 @@
 var fs = require('fs');
 const path = require('path');
 const ftp = require('basic-ftp');
-const pricePath = path.resolve(__dirname, "../json/dino-prices.json");
+const growPricePath = path.resolve(__dirname, "../json/grow-prices.json");
+const injectPricePath = path.resolve(__dirname, "../json/inject-prices.json");
 
 const ftpLocation = process.env.FTPLOCATION;
 const ftpPort = process.env.FTPPORT;
@@ -11,8 +12,11 @@ const server = process.env.SERVER;
 
 var { deductUserAmountBank, getUserAmount } = require('../api/unbelievaboat');
 
-const getDinoPrices = async () => {
-    return JSON.parse(fs.readFileSync(pricePath, `utf-8`));
+const getDinoGrowPrices = async () => {
+    return JSON.parse(fs.readFileSync(growPricePath, `utf-8`));
+}
+const getDinoInjectPrices = async () => {
+    return JSON.parse(fs.readFileSync(injectPricePath, 'utf-8'));
 }
 
 async function deleteLocalFile(fileId) {
@@ -74,7 +78,7 @@ const editPlayerFile = async (message, steamId, dinoName, type) => {
             return false;
         }
         //Replacing dinoName with the code name for the dino
-        var dinoPriceList = await getDinoPrices();
+        var dinoPriceList = await getDinoGrowPrices();
         dinoPriceList.forEach(entry => {
             if(entry.Name.toLowerCase() == dinoName.toLowerCase()) {
                 dinoName = entry.CodeName;
@@ -168,4 +172,4 @@ const deductEmbers = async(message, price) => {
 }
 
 
-module.exports = { handleDinoGrow, getDinoPrices }
+module.exports = { handleDinoGrow, getDinoGrowPrices, getDinoInjectPrices }

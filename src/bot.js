@@ -8,6 +8,7 @@ const PREFIX = process.env.PREFIX;
 var { menuEmbed } = require("./embeds/menu-embed");
 var { growEmbed } = require("./embeds/grow-embed");
 var { handleDinoGrow } = require("./functions/file-manager");
+const { injectEmbed } = require('./embeds/inject-embed');
 
 var insultList = [
     "hi scrub",
@@ -52,7 +53,8 @@ discordClient.on("message", async message => {
         }
         else if ( option.toLowerCase().startsWith("i")) {
             //Call Inject funtion
-            return message.reply("Not yet implemented, will be here soon!")
+            var injectResponse = await injectEmbed(message);
+            console.log(injectResponse);
         }
         else if ( option.toLowerCase().startsWith("s")) {
             //Call Slay funtion
