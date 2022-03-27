@@ -10,6 +10,7 @@ var { growEmbed } = require("./embeds/grow-embed");
 var { handleDinoGrow, handleDinoInject } = require("./functions/file-manager");
 var { injectEmbed } = require('./embeds/inject-embed');
 const { addSteamID, addAlt } = require('./api/steamManager');
+const { slayEmbed } = require('./embeds/slay-embed');
 
 var insultList = [
     "hi scrub",
@@ -77,6 +78,16 @@ discordClient.on("message", async message => {
     if (cmdName === "link-alt") {
         if(args.length != 1 || !args[0].startsWith('7656')) return message.reply(`please link a valid steam ID`);
         await addAlt(message, message.author.id, args[0]);
+    }
+
+    if (cmdName === "slay") {
+        if(args.length != 0) return;
+
+        if(!await slayEmbed(message)) return;
+
+        if (!await deleteServerFile(message)) return message.reply(`failed to slay your dino, please try again`);
+
+        
     }
 })
 

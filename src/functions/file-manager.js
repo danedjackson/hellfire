@@ -1,8 +1,9 @@
 var fs = require('fs');
 const path = require('path');
 const ftp = require('basic-ftp');
-const growPricePath = path.resolve(__dirname, "../json/grow-prices.json");
-const injectPricePath = path.resolve(__dirname, "../json/inject-prices.json");
+var growPricePath = path.resolve(__dirname, "../json/grow-prices.json");
+var injectPricePath = path.resolve(__dirname, "../json/inject-prices.json");
+var generalVars = path.resolve(__dirname, "../json/general.json");
 
 const ftpLocation = process.env.FTPLOCATION;
 const ftpPort = process.env.FTPPORT;
@@ -18,7 +19,9 @@ const getDinoGrowPrices = async () => {
 const getDinoInjectPrices = async () => {
     return JSON.parse(fs.readFileSync(injectPricePath, 'utf-8'));
 }
-
+const getGeneralVariables = async () => {
+    return JSON.parse(fs.readFileSync(generalVars, 'utf-8'));
+}
 async function deleteLocalFile(fileId) {
     console.log("Deleting local files . . .");
     fs.unlink("./" + fileId + ".json", (err) => {
@@ -38,6 +41,45 @@ const handleDinoInject = async(message, steamId, price, dinoName) => {
     if (!await editPlayerFile(message, steamId, dinoName, "inject")) return false;
     if (!await uploadPlayerFile(message, steamId, price)) return false;
     return true;
+}
+
+const deleteServerFile = async (message, steamId) => {
+    processing = true;
+    console.log("Deleting file. . .");
+
+    var ftpClient = new ftp.Client();
+    ftpClient.ftp.ipFamily = 4;
+
+    var price = await getGeneralVariables();
+    price = price.slayCost;
+    
+    
+
+    try {
+        await ftpClient.access({
+            host: ftpLocation,
+            port:ftpPort,
+            user: ftpusername,
+            password: ftppassword
+        });
+        var status = await ftpClient.remove(server + steamId + ".json");
+        var retryCount = 0;
+        while (status.code != 250 && retryCount < 2) {
+            status = await ftpClient.remove(server + steamId + ".json");
+            retryCount++;
+        }
+        if (status.code != 250) {
+            console.error(`something went wrong deleting file from server.`);
+            return false;
+        }
+        ftpClient.close();
+        console.log(`successfully deleted file from server.`);
+        return true;
+    }catch(err){
+        console.error("Error deleting file: " + err.message);
+        ftpClient.close();
+        return false;
+    }
 }
 
 const downloadPlayerFile = async (message, steamId) => {
@@ -197,4 +239,4 @@ const deductEmbers = async(message, price) => {
 }
 
 
-module.exports = { handleDinoGrow, getDinoGrowPrices, getDinoInjectPrices, handleDinoInject }
+module.exports = { handleDinoGrow, getDinoGrowPrices, getDinoInjectPrices, handleDinoInject, deleteServerFile }
