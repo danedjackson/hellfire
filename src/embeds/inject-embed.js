@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 var { getDinoInjectPrices } = require('../functions/file-manager');
+const { fetchLinkedIds } = require('../api/steamManager');
 
 function cancelCheck( msg) {
     if (msg === undefined || msg == null || msg == "") return true;
@@ -8,7 +9,7 @@ function cancelCheck( msg) {
             return true;
         }
     } catch (err) {
-        console.err(`Error comparing value to "cancel" string\n${err}`);
+        console.error(`Error comparing value to "cancel" string\n${err}`);
         return false;
     }
     return false;
@@ -93,6 +94,50 @@ async function injectEmbed(message) {
     }
     
     //TODO:Call linked IDs here
+    var steamId = await fetchLinkedIds(message.author.id);
+    if (steamId == null || steamId == undefined) {
+        message.reply(`you have no steam IDs linked. Please link your ID and try again.`);
+        return false;
+    }
+    if (steamId.length > 1) {
+
+        var msg = "";
+        for(var x = 0; x < steamId.length; x++){
+            msg += `${x+1}. ${steamId[x]} \n\n`;
+        }
+        prompt.fields = [];
+        prompt.addFields({
+        name: msg,
+        value: `Please select one of your linked IDs. \n(Type either 1, 2, 3, ...)`
+        });
+        message.reply(prompt);
+        await message.channel.awaitMessages(filter, options)
+            .then(collected => {
+                steamIdSelection = collected.first().content;
+                try {
+                    steamIdSelection = parseInt(steamIdSelection);
+                } catch(err) {
+                    console.error(`Error occurred parsing steam ID selection: ${err}`);
+                    message.reply(`you entered something invalid, please try again.`);
+                    return timedOut = true;
+                }
+                console.log(typeof steamIdSelection);
+                if (typeof steamIdSelection == "number") {
+                    steamId = steamId[steamIdSelection-1];
+                    if (steamId == undefined || steamId == null){
+                        message.reply("could not find steam ID.");
+                        return timedOut = true;
+                    }
+                }
+            })
+            .catch( () => {
+                message.reply(`time ran out. Please try again`);
+                return timedOut = true;
+            });
+        if(timedOut) return false;
+        if(cancelCheck(message, steamIdSelection)) return false;
+        
+    }
 
     prompt.fields = [];
     var confirm;

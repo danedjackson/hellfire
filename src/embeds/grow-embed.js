@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-var { getDinoPrices } = require('../functions/file-manager');
+var { getDinoGrowPrices } = require('../functions/file-manager');
 
 function cancelCheck( msg) {
     if (msg === undefined || msg == null || msg == "") return true;
@@ -51,7 +51,7 @@ async function growEmbed(message) {
 
     prompt.fields = [];
 
-    var dinoPriceList = await getDinoPrices();
+    var dinoPriceList = await getDinoGrowPrices();
     var prices = "";
     for (var x = 0; x < dinoPriceList.length; x++) {
         prices += `${dinoPriceList[x].Name}\t:\t🔥${dinoPriceList[x].GrowPrice.toLocaleString()}\n`;

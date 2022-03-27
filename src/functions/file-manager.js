@@ -33,6 +33,13 @@ const handleDinoGrow = async(message, steamId, price, dinoName) => {
     return true;
 }
 
+const handleDinoInject = async(message, steamId, price, dinoName) => {
+    if (!await downloadPlayerFile(message, steamId)) return false;
+    if (!await editPlayerFile(message, steamId, dinoName, "inject")) return false;
+    if (!await uploadPlayerFile(message, steamId, price)) return false;
+    return true;
+}
+
 const downloadPlayerFile = async (message, steamId) => {
     var ftpClient = new ftp.Client();
     console.log(`Downloading file for ${steamId}. . .`);
@@ -72,15 +79,33 @@ const editPlayerFile = async (message, steamId, dinoName, type) => {
         }
 
         //Check if the user has this dino
-        if (type == "grow" && !contents.CharacterClass.toLowerCase().startsWith(dinoName.toLowerCase())) {
-            message.reply(`you do not have that dino in game.`);
+        if (type == "grow") { 
+            if(!contents.CharacterClass.toLowerCase().startsWith(dinoName.toLowerCase())) {
+                message.reply(`you do not have that dino in game.`);
+                deleteLocalFile(steamId);
+                return false;
+            }
+            if (contents.Growth == "1.0") {
+                message.reply(`you are either already fully grown or a full juvi. If you are a full juvi, log in and grow before buying a grow.`);
+                deleteLocalFile(steamId);
+                return false;
+            }
+        }
+        if (type == "inject" && contents.CharacterClass.toLowerCase().startsWith(dinoName.toLowerCase())) {
+            message.reply(`you cannot inject a dino you already have.`);
             deleteLocalFile(steamId);
             return false;
         }
         //Replacing dinoName with the code name for the dino
-        var dinoPriceList = await getDinoGrowPrices();
+        var dinoPriceList;
+
+        if (type == "grow") dinoPriceList = await getDinoGrowPrices();
+        if (type == "inject") dinoPriceList = await getDinoInjectPrices()
+
+        
         dinoPriceList.forEach(entry => {
             if(entry.Name.toLowerCase() == dinoName.toLowerCase()) {
+                console.log(entry.CodeName);
                 dinoName = entry.CodeName;
             }
         })
@@ -172,4 +197,4 @@ const deductEmbers = async(message, price) => {
 }
 
 
-module.exports = { handleDinoGrow, getDinoGrowPrices, getDinoInjectPrices }
+module.exports = { handleDinoGrow, getDinoGrowPrices, getDinoInjectPrices, handleDinoInject }

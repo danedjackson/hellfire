@@ -7,7 +7,7 @@ const PREFIX = process.env.PREFIX;
 
 var { menuEmbed } = require("./embeds/menu-embed");
 var { growEmbed } = require("./embeds/grow-embed");
-var { handleDinoGrow } = require("./functions/file-manager");
+var { handleDinoGrow, handleDinoInject } = require("./functions/file-manager");
 var { injectEmbed } = require('./embeds/inject-embed');
 const { addSteamID, addAlt } = require('./api/steamManager');
 
@@ -55,7 +55,12 @@ discordClient.on("message", async message => {
         else if ( option.toLowerCase().startsWith("i")) {
             //Call Inject funtion
             var injectResponse = await injectEmbed(message);
-            console.log(injectResponse);
+
+            if(!injectResponse) return false;
+
+            if(!await handleDinoInject(message, injectResponse[2], injectResponse[1], injectResponse[0])) return false;
+
+            return message.reply("Successfully injected your dino. Please log in to the game.");
         }
         else if ( option.toLowerCase().startsWith("s")) {
             //Call Slay funtion
