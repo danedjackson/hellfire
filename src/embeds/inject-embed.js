@@ -93,6 +93,27 @@ async function injectEmbed(message) {
         return false;
     }
     
+    prompt.fields = [];
+    var gender;
+    prompt.addFields({name: "What gender are you requesting?", 
+                      value: "Please type either:\nMale\nFemale"});
+    message.reply(prompt);
+    await message.channel.awaitMessages(filter, options)
+        .then((collected)=>{
+            gender = collected.first().content
+        })
+        .catch( () => {
+            message.reply(`time ran out. Please try again`); 
+            return timedOut = true;
+        });
+    if (timedOut) return false;
+    if(cancelCheck(gender)) return false;
+    if(gender.toLowerCase().localeCompare("m") !== 0 && gender.toLowerCase().localeCompare("f") !== 0 
+            && gender.toLowerCase().localeCompare("female") !== 0 && gender.toLowerCase().localeCompare("male") !== 0) {
+                message.reply(`invalid gender, please try again.`);
+                return false;
+    }
+
     //TODO:Call linked IDs here
     var steamId = await fetchLinkedIds(message.author.id);
     if (steamId == null || steamId == undefined) {
@@ -160,7 +181,7 @@ async function injectEmbed(message) {
         prompt.fields = [];
         prompt.setTitle(`Please wait for the transaction to be completed.`);
         message.reply(prompt);
-        return [dino, price, steamId];
+        return [dino, price, steamId, gender];
     }
     message.reply(`transaction cancelled.`);
     return false;

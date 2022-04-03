@@ -2,7 +2,7 @@ const fs = require('fs');
 const axios = require('axios');
 const path = require('path');
 const steamKey = process.env.STEAMKEY;
-const MAXIDs = 2;
+const MAXIDs = 30;
 
 const getSteamJson = () => {
     return JSON.parse(fs.readFileSync(path.resolve(__dirname, "../json/steam-id.json")));

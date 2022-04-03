@@ -33,9 +33,9 @@ const handleDinoGrow = async(message, steamId, price, dinoName) => {
     return true;
 }
 
-const handleDinoInject = async(message, steamId, price, dinoName) => {
+const handleDinoInject = async(message, steamId, price, dinoName, gender) => {
     if (!await downloadPlayerFile(message, steamId)) return false;
-    if (!await editPlayerFile(message, steamId, dinoName, "inject")) return false;
+    if (!await editPlayerFile(message, steamId, dinoName, "inject", gender)) return false;
     if (!await uploadPlayerFile(message, steamId, price)) return false;
     return true;
 }
@@ -63,7 +63,7 @@ const downloadPlayerFile = async (message, steamId) => {
     }
 }
 
-const editPlayerFile = async (message, steamId, dinoName, type) => {
+const editPlayerFile = async (message, steamId, dinoName, type, gender) => {
     console.log(`Editing file for ${steamId}. . .`)
     try{
         var contents = JSON.parse(fs.readFileSync(`${steamId}.json`, `utf-8`));
@@ -96,16 +96,24 @@ const editPlayerFile = async (message, steamId, dinoName, type) => {
             deleteLocalFile(steamId);
             return false;
         }
+
+        if(contents.bBrokenLegs) {
+            message.reply(`you cannot complete this transaction with a broken leg.`);
+            return false;
+        }
+        if(contents.BleedingRate.localeCompare("0") !== 0) {
+            message.reply(`your cannot complete this transaction while your dinosaur is bleeding.`);
+            return false;
+        }
+
         //Replacing dinoName with the code name for the dino
         var dinoPriceList;
-
         if (type == "grow") dinoPriceList = await getDinoGrowPrices();
         if (type == "inject") dinoPriceList = await getDinoInjectPrices()
 
         
         dinoPriceList.forEach(entry => {
             if(entry.Name.toLowerCase() == dinoName.toLowerCase()) {
-                console.log(entry.CodeName);
                 dinoName = entry.CodeName;
             }
         })
@@ -117,7 +125,9 @@ const editPlayerFile = async (message, steamId, dinoName, type) => {
         contents.Thirst = "9999";
         contents.Stamina = "9999";
         contents.Health = "15000";
-        
+        if(type == "inject"){
+            contents.bGender = gender.toLowerCase().startsWith("m") ? false : true;
+        }
         //Prevent fall through map
         var locationParts;
         locationParts = contents.Location_Isle_V3.split("Z=", 2);
@@ -131,8 +141,8 @@ const editPlayerFile = async (message, steamId, dinoName, type) => {
         fs.writeFileSync(`${steamId}.json`, JSON.stringify(contents, null, 4));
         return true;
     } catch ( err ) {
-        console.log(`Something went wrong growing dino for ${steamId}: ${err}`);
-        message.reply(`something went wrong growing your dino. Please try again.`);
+        console.log(`Something went wrong growing/injecting dino for ${steamId}: ${err}`);
+        message.reply(`something went wrong with the process. Please try again.`);
         deleteLocalFile(steamId);
         return false;
     }
@@ -149,6 +159,15 @@ const uploadPlayerFile = async (message, steamId, price) => {
             user: ftpusername,
             password: ftppassword
         });
+        
+        //Attempt to deduct lives
+        if(price != undefined && price != null){
+            console.log(`Deducting ${price} embers at upload for ${message.author.username}`);
+            if(!await deductEmbers(message, price)) {
+                deleteLocalFile(steamId);
+                return false;
+            }
+        }
         var status = await ftpClient.uploadFrom(`${steamId}.json`, `${server}${steamId}.json`);
         var retryCount = 0;
         while (status.code != 226 && retryCount < 2) {
@@ -161,11 +180,6 @@ const uploadPlayerFile = async (message, steamId, price) => {
             deleteLocalFile(steamId);
             ftpClient.close();
             return false;
-        }
-        //Attempt to deduct lives
-        if(price != undefined && price != null){
-            console.log(`Deducting ${price} embers at upload for ${message.author.username}`);
-            if(!await deductEmbers(message, price)) return false;
         }
         deleteLocalFile(steamId);
         return true;
@@ -180,11 +194,13 @@ const uploadPlayerFile = async (message, steamId, price) => {
 const deductEmbers = async(message, price) => {
 
     var bankAmount = await getUserAmount(message.guild.id, message.author.id);
-    if (!bankAmount) {
+    if (bankAmount === null || bankAmount === undefined) {
         message.reply(`something went wrong checking your balance. Please try again.`);
         return false;
     }
+    console.log((parseInt(bankAmount) - parseInt(price)));
     if((parseInt(bankAmount) - parseInt(price)) < 0) {
+        console.log(`${message.author.username} does not have enough for this transaction`);
         message.reply(`you do not have enough embers for this purchase`);
         return false;
     }

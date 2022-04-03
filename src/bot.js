@@ -57,8 +57,8 @@ discordClient.on("message", async message => {
             var injectResponse = await injectEmbed(message);
 
             if(!injectResponse) return false;
-
-            if(!await handleDinoInject(message, injectResponse[2], injectResponse[1], injectResponse[0])) return false;
+            console.log(`injection response: ${injectResponse}`);
+            if(!await handleDinoInject(message, injectResponse[2], injectResponse[1], injectResponse[0], injectResponse[3])) return false;
 
             return message.reply("Successfully injected your dino. Please log in to the game.");
         }
